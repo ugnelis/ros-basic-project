@@ -1,0 +1,27 @@
+version: '3'
+
+networks:
+  network:
+    ipam:
+      config:
+        - subnet: ${DOCKER_SUBNET}
+
+services:
+  dev:
+    tty: true
+    stdin_open: true
+    hostname: ros.local
+    environment:
+      DEV: 1
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: .docker/dev/Dockerfile
+    restart: unless-stopped
+    ports:
+      - ${DOCKER_PORT:-11311}:11311
+    volumes:
+      - ./:/workspace
+    networks:
+      - network
